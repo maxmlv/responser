@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header_fragment :: header"></div>
+</head>
+<body>
+
+    <div th:replace="fragments/navbar_fragment :: navbar"></div>
+
+    <div th:replace="fragments/profile_fragments :: edit_modal"></div>
+
+    <div class="container align-content-center col-xxl-6 col-xl-6 col-lg-6 col-md-6" style="min-width: 510px">
+        <div class="card">
+            <div th:replace="fragments/profile_fragments :: profile_header(posts=1, media=0, likes=0)"></div>
+
+            <div class="card-body">
+                <div th:replace="fragments/post_fragments :: posts(class='container align-content-center col-xxl-9 col-xl-9 col-lg-9 col-md-9', redirect='profile/' + ${user.getUsername()})"></div>
+            </div>
+        </div>
+    </div>
+
+    <div th:insert="fragments/footer_fragment :: footer"></div>
+</body>
+</html>

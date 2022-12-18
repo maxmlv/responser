@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:HH="http://www.w3.org/1999/xhtml">
+<head>
+  <div th:replace="fragments/header_fragment :: header"></div>
+</head>
+<body>
+<div th:replace="fragments/navbar_fragment.html :: navbar"></div>
+
+<div th:replace="fragments/post_fragments :: posts(class='container align-content-center col-xxl-5 col-xl-6 col-lg-6 col-md-6', redirect='')"></div>
+
+<div th:insert="fragments/footer_fragment :: footer"></div>
+</body>
+</html>
