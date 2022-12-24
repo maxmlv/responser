@@ -23,7 +23,7 @@ resource "random_password" "password" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-module "this" {
+module "rds" {
   source = "terraform-aws-modules/rds/aws"
 
   identifier = local.identifier
@@ -45,9 +45,10 @@ module "this" {
 
   deletion_protection = false
   storage_encrypted = false
+  skip_final_snapshot = true
 
   tags = {
     Terraform = "true"
-    Environment = var.environment
+    Description = "${var.project_name} DB Instance"
   }
 }

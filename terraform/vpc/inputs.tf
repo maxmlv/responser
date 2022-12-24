@@ -23,10 +23,6 @@ variable "enabled_nat" {
   type = bool
 }
 
-variable "environment" {
-  type = string
-}
-
 locals {
   vpc_name = "${var.project_name} VPC"
 }

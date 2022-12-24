@@ -49,10 +49,6 @@ variable "master_user_name" {
   default = "responser"
 }
 
-variable "environment" {
-  type = string
-}
-
 locals {
   dbname = "${lower(var.project_name)}db"
   identifier = local.dbname

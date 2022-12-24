@@ -1,4 +1,4 @@
-variable "environment" {
+variable "deployment" {
   type = string
 }
 
@@ -39,9 +39,4 @@ variable "enabled_nat" {
 variable "zone_name" {
   type    = string
   default = "responser.space"
-}
-
-variable "owner_email" {
-  type = string
-  default = "max.mlv.aws@gmail.com"
 }

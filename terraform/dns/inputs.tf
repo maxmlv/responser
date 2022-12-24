@@ -2,14 +2,19 @@ variable "zone_name" {
   type = string
 }
 
-variable "owner_email" {
+variable "blue_instance_ip" {
   type = string
 }
 
-variable "ec2_public_ip" {
+variable "green_instance_ip" {
   type = string
 }
 
-variable "environment" {
+variable "weight_on" {
   type = string
+}
+
+locals {
+  blue = var.weight_on == "blue" ? 100 : 0
+  green = var.weight_on == "green" ? 100 : 0
 }

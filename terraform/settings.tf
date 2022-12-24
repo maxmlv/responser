@@ -8,6 +8,10 @@ provider "aws" {
   }
 }
 
-provider "acme" {
-  server_url = "https://acme-staging-v02.api.letsencrypt.org/directory"
+terraform {
+  backend "s3" {
+    bucket = "responser-terraform-state"
+    key = "responser"
+    region = "eu-central-1"
+  }
 }

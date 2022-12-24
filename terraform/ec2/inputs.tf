@@ -2,19 +2,43 @@ variable "project_name" {
   type = string
 }
 
-variable "instance_type" {
+variable "deployment" {
   type = string
-  default = "t3.micro"
+}
+
+variable "min_size" {
+  type = number
+  default = 1
+}
+
+variable "max_size" {
+  type = number
+  default = 1
+}
+
+variable "desired_size" {
+  type = number
+  default = 1
 }
 
 variable "vpc_id" {
   type = string
 }
 
-variable "public_subnet_id" {
+variable "vpc_cidr" {
   type = string
 }
 
-variable "environment" {
-  type = string
+variable "public_subnets" {
+  type = list(string)
+}
+
+variable "db_port" {
+  type = number
+}
+
+locals {
+  tags = {
+    Name = "${var.project_name}-${var.deployment}-ASG"
+  }
 }
