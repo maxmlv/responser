@@ -49,11 +49,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk -->
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.12.364</version>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.12.372</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
