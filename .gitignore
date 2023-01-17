@@ -34,3 +34,6 @@ build/
 
 terraform/*/.terraform/
 terraform/.terraform/
+
+ansible/
+server/
