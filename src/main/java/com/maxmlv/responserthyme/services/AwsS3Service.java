@@ -10,7 +10,7 @@ import java.util.UUID;
 @Service
 public class AwsS3Service {
     final String bucket = System.getenv("AWS_S3_BUCKET");
-    final AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
+    final AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
 
 
 
