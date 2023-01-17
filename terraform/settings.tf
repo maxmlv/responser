@@ -11,7 +11,7 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket = "responser-terraform-state"
-    key = "responser"
+    key    = "responser"
     region = "eu-central-1"
   }
 }

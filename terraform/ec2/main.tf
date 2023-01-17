@@ -8,7 +8,7 @@ data "aws_ami" "ubuntu" {
   }
 
   filter {
-    name = "virtualization-type"
+    name   = "virtualization-type"
     values = ["hvm"]
   }
 
@@ -16,7 +16,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "this" {
-  name   = "${var.project_name}-${var.deployment}-Instance-SG"
+  name   = "${var.project_name}-Instance-SG"
   vpc_id = var.vpc_id
 }
 
@@ -28,6 +28,7 @@ resource "aws_security_group_rule" "allow_ssh" {
   cidr_blocks       = ["217.24.161.215/32"]
   type              = "ingress"
 }
+
 resource "aws_security_group_rule" "allow_http" {
   from_port         = 80
   protocol          = "TCP"
@@ -37,12 +38,12 @@ resource "aws_security_group_rule" "allow_http" {
   type              = "ingress"
 }
 
-resource "aws_security_group_rule" "allow_mysql" {
-  from_port         = var.db_port
+resource "aws_security_group_rule" "allow_https" {
+  from_port         = 443
   protocol          = "TCP"
   security_group_id = aws_security_group.this.id
-  to_port           = var.db_port
-  cidr_blocks = [var.vpc_cidr]
+  to_port           = 443
+  cidr_blocks       = ["0.0.0.0/0"]
   type              = "ingress"
 }
 
@@ -55,37 +56,32 @@ resource "aws_security_group_rule" "allow_all" {
   type              = "egress"
 }
 
-module "ec2" {
-  source = "terraform-aws-modules/autoscaling/aws"
+data "aws_subnet" "rds_related" {
+  filter {
+    name   = "tag:Name"
+    values = ["${var.vpc_name}-public-${var.rds_az}"]
+  }
+}
 
-  name   = "${var.project_name}-${var.deployment}-ASG"
-  min_size = var.min_size
-  max_size = var.max_size
-  desired_capacity = var.desired_size
-  key_name = "maxmlv"
-  instance_type = "t3.micro"
-  image_id = data.aws_ami.ubuntu.id
-  network_interfaces = []
+module "ec2" {
+  source = "terraform-aws-modules/ec2-instance/aws"
+
+  name = local.instance_name
+
+  ami                    = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
+  vpc_security_group_ids = [aws_security_group.this.id]
+  subnet_id              = data.aws_subnet.rds_related.id
 
   create_iam_instance_profile = true
-  iam_role_name = "${var.project_name}-${var.deployment}-Instance-Role"
-  iam_role_path = "/ec2/"
-  iam_role_description = "Instance role for ${var.project_name}-${var.deployment} EC2"
+  iam_role_name               = "${var.project_name}-Instance-Role"
+  iam_role_path               = "/ec2/"
+  iam_role_description        = "Instance role for ${var.project_name} EC2"
   iam_role_tags = {
     CustomIamRole = "Yes"
   }
   iam_role_policies = {
-    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     AmazonS3FullAccess = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
   }
-  vpc_zone_identifier = var.public_subnets
-  security_groups = [aws_security_group.this.id]
-
-  tags = local.tags
-}
-
-data "aws_instance" "created" {
-  instance_tags = local.tags
-
-  depends_on = [module.ec2]
 }

@@ -4,19 +4,19 @@ module "s3_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
   bucket = lower("${var.project_name}-images-${random_uuid.random.result}")
-  acl = "public-read"
+  acl    = "public-read"
 
-  block_public_acls = false
+  block_public_acls   = false
   block_public_policy = false
-  ignore_public_acls = false
-  force_destroy = true
+  ignore_public_acls  = false
+  force_destroy       = true
 
   versioning = {
     enabled = false
   }
 
   tags = {
-    Terraform = "true"
+    Terraform   = "true"
     Description = "${var.project_name} images S3 bucket"
   }
 }

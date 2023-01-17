@@ -3,32 +3,32 @@ variable "project_name" {
 }
 
 variable "engine" {
-  type = string
+  type    = string
   default = "mysql"
 }
 
 variable "engine_version" {
-  type = string
+  type    = string
   default = "8.0.28"
 }
 
 variable "major_engine_version" {
-  type = string
+  type    = string
   default = "8.0"
 }
 
 variable "family" {
-  type = string
+  type    = string
   default = "mysql8.0"
 }
 
 variable "instance_class" {
-  type = string
+  type    = string
   default = "db.t3.micro"
 }
 
 variable "port" {
-  type = string
+  type    = string
   default = "3306"
 }
 
@@ -45,12 +45,17 @@ variable "allowed_cidr_blocks" {
 }
 
 variable "master_user_name" {
-  type = string
+  type    = string
   default = "responser"
 }
 
+variable "allocated_storage" {
+  type    = number
+  default = 20
+}
+
 locals {
-  dbname = "${lower(var.project_name)}db"
+  dbname     = "${lower(var.project_name)}db"
   identifier = local.dbname
-  sg_name = "${var.project_name}-DB"
+  sg_name    = "${var.project_name}-DB"
 }

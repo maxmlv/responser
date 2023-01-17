@@ -1,5 +1,11 @@
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
 module "security_group" {
-  source = "terraform-aws-modules/security-group/aws"
+  source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
   name        = local.sg_name
@@ -17,38 +23,32 @@ module "security_group" {
   ]
 }
 
-resource "random_password" "password" {
-  length = 16
-  special = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
-
 module "rds" {
   source = "terraform-aws-modules/rds/aws"
 
   identifier = local.identifier
 
-  engine = var.engine
-  engine_version = var.engine_version
-  family = var.family
+  engine               = var.engine
+  engine_version       = var.engine_version
   major_engine_version = var.major_engine_version
-  instance_class = var.instance_class
-  allocated_storage = 20
+  family               = var.family
+  instance_class       = var.instance_class
+  allocated_storage    = var.allocated_storage
 
-  db_name = local.dbname
+  db_name  = local.dbname
   username = var.master_user_name
   password = random_password.password.result
-  port = var.port
+  port     = var.port
 
   vpc_security_group_ids = [module.security_group.security_group_id]
-  db_subnet_group_name = var.database_subnet_group
+  db_subnet_group_name   = var.database_subnet_group
 
   deletion_protection = false
-  storage_encrypted = false
+  storage_encrypted   = false
   skip_final_snapshot = true
 
   tags = {
-    Terraform = "true"
+    Terraform   = "true"
     Description = "${var.project_name} DB Instance"
   }
 }
