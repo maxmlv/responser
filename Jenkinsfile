@@ -19,6 +19,10 @@ pipeline {
         }
 
         stage('Terraform init') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 cd terraform
@@ -28,6 +32,10 @@ pipeline {
         }
 
         stage('Terraform plan') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 cd terraform
@@ -36,9 +44,9 @@ pipeline {
             }
         }
 
-        stage('Trigger test') {
+        stage('Test webhook') {
             steps {
-                sh 'echo "test webhook"'
+                sh 'echo "test webhook on pull requests."'
             }
         }
     }
