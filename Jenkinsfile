@@ -23,5 +23,11 @@ pipeline {
                 '''
             }
         }
+
+        stage('Trigger') {
+            steps {
+                sh 'echo "Webhook triggered!"'
+            }
+        }
     }
 }
