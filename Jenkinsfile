@@ -35,5 +35,11 @@ pipeline {
                 '''
             }
         }
+
+        stage('Trigger test') {
+            steps {
+                sh 'echo "test webhook"'
+            }
+        }
     }
 }
