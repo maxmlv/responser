@@ -6,6 +6,18 @@ pipeline {
     }
 
     stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
         stage('Terraform init') {
             steps {
                 sh '''
@@ -21,12 +33,6 @@ pipeline {
                 cd terraform
                 terraform plan
                 '''
-            }
-        }
-
-        stage('Trigger') {
-            steps {
-                sh 'echo "Webhook triggered!!!"'
             }
         }
     }
