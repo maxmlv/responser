@@ -43,25 +43,5 @@ pipeline {
                 '''
             }
         }
-
-        stage('Test webhook on main') {
-            when {
-                branch 'main'
-            }
-
-            steps {
-                sh 'echo "Triggered auto from main branch"'
-            }
-        }
-
-        stage('Test webhook') {
-            when {
-                branch 'feature/*'
-            }
-
-            steps {
-                sh 'echo "test webhook on pull requests"'
-            }
-        }
     }
 }
