@@ -60,7 +60,7 @@ pipeline {
             }
 
             steps {
-                sh 'echo "test webhook on pull requests....Configured jenkins to build on any branch...Test 2"'
+                sh 'echo "test webhook on pull requests"'
             }
         }
     }
