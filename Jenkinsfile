@@ -20,7 +20,7 @@ pipeline {
 
         stage('Terraform init') {
             when {
-                branch '*/main'
+                branch 'main'
             }
 
             steps {
@@ -33,7 +33,7 @@ pipeline {
 
         stage('Terraform plan') {
             when {
-                branch '*/main'
+                branch 'main'
             }
 
             steps {
