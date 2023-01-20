@@ -60,7 +60,7 @@ pipeline {
             }
 
             steps {
-                sh 'echo "test webhook on pull requests."'
+                sh 'echo "test webhook on pull requests...Second test"'
             }
         }
     }
