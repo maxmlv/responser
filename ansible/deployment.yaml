@@ -1,0 +1,42 @@
+---
+- name: Deploy java application
+  hosts: webservers
+  become: yes
+  vars_files:
+    - ./vars/vars.yaml
+  vars:
+    app:
+      - key: AWS_S3_BUCKET
+        value: '{{ s3_bucket }}'
+      - key: SPRING_DATASOURCE_URL
+        value: 'jdbc:{{ rds_engine }}://{{ rds_address }}:{{ rds_port }}/{{ rds_db }}'
+      - key: SPRING_DATASOURCE_USERNAME
+        value: '{{ rds_username }}'
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: '{{ rds_password }}'
+  tasks:
+    - name: Ensure old application stopped
+      command: pgrep -f java
+      ignore_errors: true
+      register: pid
+    - command: kill {{ pid.stdout }}
+      when: pid.stdout != ""
+
+    - name: customize /etc/environment
+      ansible.builtin.lineinfile:
+        dest: "/etc/environment"
+        state: present
+        regexp: "^{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+      with_items: "{{ app }}"
+
+    - name: Copy .jar file
+      copy:
+        src: ./app/responser-{{ app_version }}.jar
+        dest: /var/www/{{ domain }}/responser-{{ app_version }}.jar
+        owner: "{{ ansible_ssh_user }}"
+        group: "{{ ansible_ssh_user }}"
+        mode: 0644
+
+    - name: Run java application
+      shell: nohup java -jar /var/www/{{ domain }}/responser-{{ app_version }}.jar > /var/log/{{ domain }}/responser.log 2>&1 &

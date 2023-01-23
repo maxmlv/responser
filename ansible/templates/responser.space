@@ -1,0 +1,27 @@
+server {
+    listen 80;
+    server_name responser.space;
+
+    if ($host = responser.space) {
+        return 301 https://$host$request_uri;
+    }
+
+    return 404;
+}
+
+server {
+    listen 443 ssl;
+    server_name responser.space;
+
+    ssl_certificate /efs/fullchain.pem;
+    ssl_certificate_key /efs/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}

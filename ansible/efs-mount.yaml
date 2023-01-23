@@ -1,0 +1,34 @@
+---
+- name: Mount EFS with SSL certificates
+  hosts: webservers
+  become: yes
+  gather_facts: yes
+
+  vars:
+    aws_region: eu-central-1
+    nfs_package: nfs-common
+    efs_file_system_id: fs-031c863a81f2e705f
+    efs_mount_dir: /efs
+
+  tasks:
+    - name: Ensure NFS is installed.
+      package: "name={{ nfs_package }} state=present"
+
+    - name: Ensure mount directory exists.
+      file:
+        path: "{{ efs_mount_dir }}"
+        state: directory
+        mode: 0755
+
+    - name: Ensure EFS volume is mounted.
+      mount:
+        path: "{{ efs_mount_dir }}"
+        src: "{{ efs_file_system_id }}.efs.{{ aws_region }}.amazonaws.com:/"
+        fstype: nfs4
+        opts: nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport
+        state: mounted
+
+    # Print the contents of the mount to the log.
+    - command: "ls -lah {{ efs_mount_dir }}"
+      register: efs_contents
+    - debug: var=efs_contents

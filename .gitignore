@@ -35,5 +35,4 @@ build/
 terraform/*/.terraform/
 terraform/.terraform/
 
-ansible/
-server/
+ansible/hosts.ini

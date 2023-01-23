@@ -36,9 +36,38 @@ pipeline {
             }
         }
 
-        stage('App version') {
+        stage('Terraform apply') {
             steps {
-                sh 'echo ${POM_VERSION}'
+                sh '''
+                cd terraform
+                terraform apply -var-file="inputs.tfvars" -auto-approve
+                '''
+            }
+        }
+
+        stage('Ansible PK') {
+            steps {
+                sh '''
+                aws secretsmanager get-secret-value \
+                --secret-id responser.pem \
+                --query SecretString \
+                --output text > ~/.ssh/responser.pem
+                chmod 400 ~/.ssh/responser.pem
+                ls -al ~/.ssh
+                '''
+            }
+        }
+
+        stage('Ansible vars') {
+            steps {
+                sh '''
+                cd terraform
+                chmod +x tf-output.sh
+                ./tf-output.sh ../ansible/vars/vars.yaml
+                cd ..
+                basename ./target/*.jar | tr -cd "0-9." | sed 's/.$//' >> ./ansible/vars/vars.yaml
+                cat ./ansible/vars/vars.yaml
+                '''
             }
         }
     }

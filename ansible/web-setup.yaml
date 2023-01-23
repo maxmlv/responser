@@ -1,0 +1,51 @@
+---
+- name: Install and configure packages
+  hosts: webservers
+  become: yes
+  vars:
+    domain: responser.space
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install nginx and java
+      apt:
+        name:
+          - nginx
+          - default-jre
+        state: latest
+
+    - name: Create directory for application
+      file:
+        path: /var/www/{{ domain }}
+        state: directory
+        mode: 0775
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Create directory for logs
+      file:
+        path: /var/log/{{ domain }}
+        state: directory
+        mode: 0775
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Copy nginx config file
+      template:
+        src: responser.space
+        dest: /etc/nginx/sites-availabe/{{ domain }}
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create soft link of nginx config file
+      shell: ln -s /etc/nginx/sites-avilable/{{ domain }} /etc/nginx/sites-enabled/{{ domain }}
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
