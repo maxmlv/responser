@@ -1,18 +1,17 @@
-module "vpc" {
-  source                 = "./vpc"
-  project_name           = var.project_name
-  vpc_cidr_block         = var.vpc_cidr_block
-  azs                    = var.azs
-  public_subnets_cidrs   = var.public_subnets_cidrs
-  database_subnets_cidrs = var.database_subnets_cidrs
-}
-
 module "rds" {
-  source                = "./rds"
-  allowed_cidr_blocks   = module.vpc.vpc_cidr_block
-  database_subnet_group = module.vpc.database_subnet_group
-  project_name          = var.project_name
-  vpc_id                = module.vpc.vpc_id
+  source               = "./rds"
+  allowed_cidr_blocks  = var.vpc_cidr_block
+  project_name         = var.project_name
+  vpc_id               = var.vpc_id
+  private_subnets_ids  = var.private_subnets_ids
+  allocated_storage    = var.rds_allocated_storage
+  engine               = var.rds_engine
+  engine_version       = var.rds_engine_version
+  family               = var.rds_family
+  instance_class       = var.rds_instance_class
+  major_engine_version = var.rds_major_engine_version
+  master_user_name     = var.rds_master_user_name
+  port                 = var.rds_port
 }
 
 module "s3" {
@@ -21,11 +20,24 @@ module "s3" {
 }
 
 module "ec2" {
-  source       = "./ec2"
-  project_name = var.project_name
-  rds_az       = module.rds.db_az
-  vpc_id       = module.vpc.vpc_id
-  vpc_name     = module.vpc.vpc_name
+  source        = "./ec2"
+  project_name  = var.project_name
+  rds_az        = module.rds.db_az
+  vpc_id        = var.vpc_id
+  instance_type = var.ec2_instance_type
+  key_name      = var.ec2_key_name
+  public_subnets_ids = var.public_subnets_ids
+}
+
+resource "local_file" "hosts_cfg" {
+  content = templatefile("${path.module}/templates/hosts.tpl",
+    {
+      webservers_ip = [module.ec2.public_ip]
+    }
+  )
+  filename = "../ansible/hosts.ini"
+
+  depends_on = [module.ec2]
 }
 
 module "dns" {

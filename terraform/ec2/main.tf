@@ -20,12 +20,21 @@ resource "aws_security_group" "this" {
   vpc_id = var.vpc_id
 }
 
-resource "aws_security_group_rule" "allow_ssh" {
+resource "aws_security_group_rule" "allow_ssh_owner" {
   from_port         = 22
   protocol          = "TCP"
   security_group_id = aws_security_group.this.id
   to_port           = 22
   cidr_blocks       = ["217.24.161.215/32"]
+  type              = "ingress"
+}
+
+resource "aws_security_group_rule" "allow_ssh_ansible" {
+  from_port         = 22
+  protocol          = "tcp"
+  security_group_id = aws_security_group.this.id
+  to_port           = 22
+  cidr_blocks       = ["3.120.233.223/32"]
   type              = "ingress"
 }
 
@@ -47,6 +56,15 @@ resource "aws_security_group_rule" "allow_https" {
   type              = "ingress"
 }
 
+resource "aws_security_group_rule" "allow_nfs" {
+  from_port         = 2049
+  protocol          = "TCP"
+  security_group_id = aws_security_group.this.id
+  to_port           = 2049
+  cidr_blocks       = ["0.0.0.0/0"]
+  type              = "ingress"
+}
+
 resource "aws_security_group_rule" "allow_all" {
   from_port         = 0
   protocol          = "all"
@@ -54,13 +72,6 @@ resource "aws_security_group_rule" "allow_all" {
   to_port           = 0
   cidr_blocks       = ["0.0.0.0/0"]
   type              = "egress"
-}
-
-data "aws_subnet" "rds_related" {
-  filter {
-    name   = "tag:Name"
-    values = ["${var.vpc_name}-public-${var.rds_az}"]
-  }
 }
 
 module "ec2" {
@@ -72,7 +83,8 @@ module "ec2" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.this.id]
-  subnet_id              = data.aws_subnet.rds_related.id
+  subnet_id              = local.rds_related_subnet
+  associate_public_ip_address = true
 
   create_iam_instance_profile = true
   iam_role_name               = "${var.project_name}-Instance-Role"

@@ -4,6 +4,11 @@ resource "random_password" "password" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
+resource "aws_db_subnet_group" "this" {
+  name       = "${var.project_name}-database-subnet-group"
+  subnet_ids = var.private_subnets_ids
+}
+
 module "security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
@@ -41,7 +46,7 @@ module "rds" {
   port     = var.port
 
   vpc_security_group_ids = [module.security_group.security_group_id]
-  db_subnet_group_name   = var.database_subnet_group
+  db_subnet_group_name   = aws_db_subnet_group.this.name
 
   deletion_protection = false
   storage_encrypted   = false
