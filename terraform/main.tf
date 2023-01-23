@@ -32,7 +32,7 @@ module "ec2" {
 resource "local_file" "hosts_cfg" {
   content = templatefile("${path.module}/templates/hosts.tpl",
     {
-      webservers_ip = [module.ec2.public_ip]
+      webservers = [module.ec2.public_ip]
     }
   )
   filename = "../ansible/hosts.ini"
