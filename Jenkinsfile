@@ -48,6 +48,7 @@ pipeline {
         stage('Ansible PK') {
             steps {
                 sh '''
+                [ ! -d ~/.ssh ] && mkdir ~/.ssh
                 aws secretsmanager get-secret-value \
                 --secret-id responser.pem \
                 --query SecretString \
