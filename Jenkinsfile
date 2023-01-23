@@ -19,10 +19,6 @@ pipeline {
         }
 
         stage('Terraform init') {
-            when {
-                branch 'main'
-            }
-
             steps {
                 sh '''
                 cd terraform
@@ -32,15 +28,17 @@ pipeline {
         }
 
         stage('Terraform plan') {
-            when {
-                branch 'main'
-            }
-
             steps {
                 sh '''
                 cd terraform
-                terraform plan
+                terraform plan -var-file="inputs.tfvars"
                 '''
+            }
+        }
+
+        stage('App version') {
+            steps {
+                sh 'echo ${POM_VERSION}'
             }
         }
     }
