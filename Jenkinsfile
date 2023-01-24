@@ -66,7 +66,7 @@ pipeline {
                 chmod +x tf-output.sh
                 ./tf-output.sh ../ansible/vars/vars.yaml
                 cd ..
-                basename ./target/*.jar | tr -cd "0-9." | sed 's/.$//' >> ./ansible/vars/vars.yaml
+                echo "app_version: $(basename ./target/*.jar | tr -cd "0-9." | sed 's/.$//')" >> ./ansible/vars/vars.yaml
                 cat ./ansible/vars/vars.yaml
                 '''
             }
