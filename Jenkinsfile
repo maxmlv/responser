@@ -18,19 +18,11 @@ pipeline {
             }
         }
 
-        stage('Terraform init') {
+        stage('Terraform init and plan') {
             steps {
                 sh '''
                 cd terraform
                 terraform init
-                '''
-            }
-        }
-
-        stage('Terraform plan') {
-            steps {
-                sh '''
-                cd terraform
                 terraform plan -var-file="inputs.tfvars"
                 '''
             }
@@ -45,7 +37,7 @@ pipeline {
             }
         }
 
-        stage('Ansible PK') {
+        stage('Ansible PK and Vars retrieval') {
             steps {
                 sh '''
                 [ ! -d ~/.ssh ] && mkdir ~/.ssh
@@ -55,13 +47,6 @@ pipeline {
                 --output text > ~/.ssh/responser.pem
                 chmod 400 ~/.ssh/responser.pem
                 ls -al ~/.ssh
-                '''
-            }
-        }
-
-        stage('Ansible vars') {
-            steps {
-                sh '''
                 cd terraform
                 chmod +x tf-output.sh
                 ./tf-output.sh ../ansible/vars/vars.yaml
