@@ -62,7 +62,6 @@ pipeline {
         stage('Ansible vars') {
             steps {
                 sh '''
-                touch ./ansible/vars/vars.yaml
                 cd terraform
                 chmod +x tf-output.sh
                 ./tf-output.sh ../ansible/vars/vars.yaml
