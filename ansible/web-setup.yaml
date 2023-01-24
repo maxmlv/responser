@@ -3,7 +3,6 @@
   hosts: webservers
   become: yes
   vars:
-    domain: responser.space
   tasks:
     - name: Update and upgrade apt packages
       apt:
@@ -37,13 +36,18 @@
     - name: Copy nginx config file
       template:
         src: responser.space
-        dest: /etc/nginx/sites-availabe/{{ domain }}
+        dest: /etc/nginx/sites-available/{{ domain }}
         owner: root
         group: root
         mode: '0644'
 
-    - name: Create soft link of nginx config file
+    - stat:
+        path: /etc/nginx/sites-enabled/{{ domain }}
+      register: ln_check
+
+    - name: Ensure soft link of nginx config file is created
       shell: ln -s /etc/nginx/sites-avilable/{{ domain }} /etc/nginx/sites-enabled/{{ domain }}
+      when: not ln_check.stat.exists
 
     - name: Restart nginx
       service:

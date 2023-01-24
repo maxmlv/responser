@@ -71,5 +71,32 @@ pipeline {
                 '''
             }
         }
+
+        stage('Ansible EFS Mount') {
+            steps {
+                sh '''
+                cd ansible
+                ansible-playbook efs-mount.yaml -i hosts.ini
+                '''
+            }
+        }
+
+        stage('Ansible Web') {
+            steps {
+                sh '''
+                cd ansible
+                ansible-playbook web-setup.yaml -i hosts.ini
+                '''
+            }
+        }
+
+        stage('Ansible Deployment') {
+            steps {
+                sh '''
+                cd ansible
+                ansible-playbook deployment.yaml -i hosts.ini
+                '''
+            }
+        }
     }
 }
