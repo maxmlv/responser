@@ -12,8 +12,8 @@ output "rds_password" {
   sensitive = true
 }
 
-output "rds_host" {
-  value = module.rds.db_instance_endpoint
+output "rds_address" {
+  value = module.rds.db_instance_address
 }
 
 output "rds_port" {

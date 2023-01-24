@@ -1,8 +1,8 @@
-output "rds_host" {
-  value = module.rds.rds_host
+output "rds_address" {
+  value = module.rds.rds_address
 }
 
-output "rds_master" {
+output "rds_username" {
   value     = module.rds.rds_master
   sensitive = true
 }
