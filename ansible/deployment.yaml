@@ -32,7 +32,7 @@
 
     - name: Copy .jar file
       copy:
-        src: ./target/responser-{{ app_version }}.jar
+        src: ../target/responser-{{ app_version }}.jar
         dest: /var/www/{{ domain }}/responser-{{ app_version }}.jar
         owner: "{{ ansible_ssh_user }}"
         group: "{{ ansible_ssh_user }}"
