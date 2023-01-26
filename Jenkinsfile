@@ -18,10 +18,10 @@ pipeline {
             }
         }
 
-        def current
-        def deploy_on
-
         stage('Terraform init and plan') {
+            def current
+            def deploy_on
+
             steps {
                 sh '''
                 cd terraform
