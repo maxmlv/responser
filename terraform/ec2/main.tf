@@ -16,7 +16,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "this" {
-  name   = "${var.project_name}-Instance-SG"
+  name   = "${var.instance_name}-Instance-SG"
   vpc_id = var.vpc_id
 }
 
@@ -87,9 +87,9 @@ module "ec2" {
   associate_public_ip_address = true
 
   create_iam_instance_profile = true
-  iam_role_name               = "${var.project_name}-Instance-Role"
+  iam_role_name               = "${var.instance_name}-Instance-Role"
   iam_role_path               = "/ec2/"
-  iam_role_description        = "Instance role for ${var.project_name} EC2"
+  iam_role_description        = "Instance role for ${var.instance_name} EC2"
   iam_role_tags = {
     CustomIamRole = "Yes"
   }

@@ -19,29 +19,42 @@ module "s3" {
   project_name = var.project_name
 }
 
-module "ec2" {
+module "blue" {
   source        = "./ec2"
-  project_name  = var.project_name
   rds_az        = module.rds.db_az
   vpc_id        = var.vpc_id
   instance_type = var.ec2_instance_type
   key_name      = var.ec2_key_name
   public_subnets_ids = var.public_subnets_ids
+  instance_name = "${var.project_name}-blue"
+}
+
+module "green" {
+  source = "./ec2"
+  instance_type = var.ec2_instance_type
+  key_name = var.ec2_key_name
+  public_subnets_ids = var.public_subnets_ids
+  rds_az = module.rds.db_az
+  vpc_id = var.vpc_id
+  instance_name = "${var.project_name}-green"
 }
 
 resource "local_file" "hosts_cfg" {
   content = templatefile("${path.module}/templates/hosts.tpl",
     {
-      webservers = [module.ec2.public_ip]
+      blue = [module.blue.public_ip]
+      green = [module.green.public_ip]
     }
   )
   filename = "../ansible/hosts.ini"
 
-  depends_on = [module.ec2]
+  depends_on = [module.blue]
 }
 
 module "dns" {
   source        = "./dns"
-  ec2_public_ip = module.ec2.public_ip
   zone_name     = var.zone_name
+  deployment = var.deployment
+  blue_public_ip = module.blue.public_ip
+  green_public_ip = module.green.public_ip
 }

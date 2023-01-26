@@ -2,6 +2,11 @@ variable "project_name" {
   type = string
 }
 
+variable "deployment" {
+  type = string
+  default = "blue"
+}
+
 variable "zone_name" {
   type = string
 }

@@ -18,12 +18,30 @@ pipeline {
             }
         }
 
+        def current
+        def deploy_on
+
         stage('Terraform init and plan') {
             steps {
                 sh '''
                 cd terraform
                 terraform init
-                terraform plan -var-file="inputs.tfvars"
+                '''
+                script {
+                    def current_state = sh(returnStdout: true, script: "cd terraform; terraform output deployment").trim()
+                    if (current_state == "blue") {
+                        current = "blue"
+                        deploy_on = "green"
+                    } else {
+                        current = "green"
+                        deploy_on = "blue"
+                    }
+                }
+                sh '''
+                echo "current = ${current}"
+                echo "deploy_on = ${deploy_on}"
+                cd terraform
+                terraform plan -var-file="inputs.tfvars" -var="deployment=${current}"
                 '''
             }
         }
@@ -32,7 +50,7 @@ pipeline {
             steps {
                 sh '''
                 cd terraform
-                terraform apply -var-file="inputs.tfvars" -auto-approve
+                terraform apply -var-file="inputs.tfvars" -var="deployment=${current}" -auto-approve
                 '''
             }
         }
@@ -61,7 +79,7 @@ pipeline {
             steps {
                 sh '''
                 cd ansible
-                ansible-playbook efs-mount.yaml -i hosts.ini
+                ansible-playbook efs-mount.yaml -i hosts.ini --extra-vars "deploy_on=${deploy_on}"
                 '''
             }
         }
@@ -70,7 +88,7 @@ pipeline {
             steps {
                 sh '''
                 cd ansible
-                ansible-playbook web-setup.yaml -i hosts.ini
+                ansible-playbook web-setup.yaml -i hosts.ini --extra-vars "deploy_on=${deploy_on}"
                 '''
             }
         }
@@ -79,7 +97,16 @@ pipeline {
             steps {
                 sh '''
                 cd ansible
-                ansible-playbook deployment.yaml -i hosts.ini
+                ansible-playbook deployment.yaml -i hosts.ini --extra-vars "deploy_on=${deploy_on}"
+                '''
+            }
+        }
+
+        stage('Terraform Blue/Green Switch') {
+            steps {
+                sh '''
+                cd terraform
+                terraform apply -var-file="inputs.tf" -var="deployment=${deploy_on}" -auto-approve
                 '''
             }
         }

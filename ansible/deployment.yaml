@@ -1,6 +1,6 @@
 ---
 - name: Deploy java application
-  hosts: webservers
+  hosts: {{ deploy_on }}
   become: yes
   vars_files:
     - ./vars/vars.yaml

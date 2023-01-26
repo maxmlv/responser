@@ -1,6 +1,6 @@
 ---
 - name: Mount EFS with SSL certificates
-  hosts: webservers
+  hosts: {{ deploy_on }}
   become: yes
   gather_facts: yes
 

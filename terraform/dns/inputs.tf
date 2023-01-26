@@ -2,6 +2,14 @@ variable "zone_name" {
   type = string
 }
 
-variable "ec2_public_ip" {
+variable "blue_public_ip" {
+  type = string
+}
+
+variable "green_public_ip" {
+  type = string
+}
+
+variable "deployment" {
   type = string
 }

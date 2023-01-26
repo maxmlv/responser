@@ -1,4 +1,4 @@
-variable "project_name" {
+variable "instance_name" {
   type = string
 }
 
@@ -23,6 +23,6 @@ variable "key_name" {
 }
 
 locals {
-  instance_name = "${var.project_name}-application"
+  instance_name = "${var.instance_name}-application"
   rds_related_subnet = var.rds_az == "eu-central-1a" ? var.public_subnets_ids[0] : var.public_subnets_ids[1]
 }
