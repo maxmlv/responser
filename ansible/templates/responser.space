@@ -1,9 +1,13 @@
 server {
     listen 80;
-    server_name responser.space;
+    server_name responser.space www.responser.space;
 
     if ($host = responser.space) {
         return 301 https://$host$request_uri;
+    }
+
+    if ($host = www.responser.space) {
+            return 301 https://$host$request_uri;
     }
 
     return 404;
@@ -11,7 +15,7 @@ server {
 
 server {
     listen 443 ssl;
-    server_name responser.space;
+    server_name responser.space www.responser.space;
 
     ssl_certificate /efs/fullchain.pem;
     ssl_certificate_key /efs/privkey.pem;
