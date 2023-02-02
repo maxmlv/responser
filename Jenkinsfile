@@ -44,6 +44,8 @@ pipeline {
                 chmod +x deploy_state.sh; chmod +x export_state.sh
                 ./deploy_state.sh deploy_state
                 . export_state.sh deploy_state
+                echo $CURRENT
+                echo $DEPLOY_ON
                 cd ../terraform
                 export DEPLOY_IP_ADDRESS=$(terraform output -raw $DEPLOY_ON)
                 '''
