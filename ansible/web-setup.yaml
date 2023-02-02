@@ -46,7 +46,7 @@
       register: ln_check
 
     - name: Ensure soft link of nginx config file is created
-      shell: ln -s /etc/nginx/sites-avilable/{{ domain }} /etc/nginx/sites-enabled/{{ domain }}
+      shell: ln -s /etc/nginx/sites-available/{{ domain }} /etc/nginx/sites-enabled/{{ domain }}
       when: not ln_check.stat.exists
 
     - name: Restart nginx
