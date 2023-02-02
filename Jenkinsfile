@@ -75,6 +75,7 @@ pipeline {
         stage('Ansible EFS Mount') {
             steps {
                 sh '''
+                echo $DEPLOY_ON
                 cd ansible
                 ansible-playbook efs-mount.yaml -i hosts.ini
                 '''
