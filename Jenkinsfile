@@ -41,13 +41,8 @@ pipeline {
             steps {
                 sh '''
                 cd deployment-switch
-                chmod +x deploy_state.sh; chmod +x export_state.sh
+                chmod +x deploy_state.sh; chmod +x export_state.sh; chmod +x deploy_switch
                 ./deploy_state.sh deploy_state
-                . export_state.sh deploy_state
-                echo $CURRENT
-                echo $DEPLOY_ON
-                cd ../terraform
-                export DEPLOY_IP_ADDRESS=$(terraform output -raw $DEPLOY_ON)
                 '''
             }
         }
@@ -75,8 +70,9 @@ pipeline {
         stage('Ansible EFS Mount') {
             steps {
                 sh '''
-                echo $DEPLOY_ON
-                cd ansible
+                cd deployment-switch
+                . export_state.sh deploy_state
+                cd ../ansible
                 ansible-playbook efs-mount.yaml -i hosts.ini
                 '''
             }
@@ -85,7 +81,9 @@ pipeline {
         stage('Ansible Web') {
             steps {
                 sh '''
-                cd ansible
+                cd deployment-switch
+                . export_state.sh deploy_state
+                cd ../ansible
                 ansible-playbook web-setup.yaml -i hosts.ini
                 '''
             }
@@ -94,7 +92,9 @@ pipeline {
         stage('Ansible Deployment') {
             steps {
                 sh '''
-                cd ansible
+                cd deployment-switch
+                . export_state.sh deploy_state
+                cd ../ansible
                 ansible-playbook deployment.yaml -i hosts.ini
                 '''
             }
@@ -103,6 +103,10 @@ pipeline {
         stage('Post-Deployment Traffic Switch') {
             steps {
                 sh '''
+                cd deployment-switch
+                . export_state.sh deploy_state
+                cd ../terraform
+                export DEPLOY_IP_ADDRESS=$(terraform output -raw $DEPLOY_ON)
                 cd ../deployment-switch
                 ./deploy_switch.sh record_update.json $DEPLOY_IP_ADDRESS
                 '''
