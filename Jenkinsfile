@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sh '''
                 cd deployment-switch
-                chmod +x deploy_state.sh; chmod +x export_state.sh; chmod +x deploy_switch
+                chmod +x deploy_state.sh; chmod +x export_state.sh; chmod +x deploy_switch.sh
                 ./deploy_state.sh deploy_state
                 '''
             }
