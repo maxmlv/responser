@@ -19,29 +19,11 @@ pipeline {
         }
 
         stage('Terraform init and plan') {
-            def current
-            def deploy_on
-
             steps {
                 sh '''
                 cd terraform
                 terraform init
-                '''
-                script {
-                    def current_state = sh(returnStdout: true, script: "cd terraform; terraform output deployment").trim()
-                    if (current_state == "blue") {
-                        current = "blue"
-                        deploy_on = "green"
-                    } else {
-                        current = "green"
-                        deploy_on = "blue"
-                    }
-                }
-                sh '''
-                echo "current = ${current}"
-                echo "deploy_on = ${deploy_on}"
-                cd terraform
-                terraform plan -var-file="inputs.tfvars" -var="deployment=${current}"
+                terraform plan -var-file="inputs.tfvars"
                 '''
             }
         }
@@ -50,7 +32,7 @@ pipeline {
             steps {
                 sh '''
                 cd terraform
-                terraform apply -var-file="inputs.tfvars" -var="deployment=${current}" -auto-approve
+                terraform apply -var-file="inputs.tfvars" -auto-approve
                 '''
             }
         }
