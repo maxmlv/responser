@@ -1,6 +1,6 @@
 ---
 - name: Mount EFS with SSL certificates
-  hosts: '{{ deploy_on }}'
+  hosts: "{{ lookup('env', 'DEPLOY_ON') }}"
   become: yes
   gather_facts: yes
 

@@ -1,6 +1,6 @@
 ---
 - name: Deploy java application
-  hosts: '{{ deploy_on }}'
+  hosts: "{{ lookup('env', 'DEPLOY_ON') }}"
   become: yes
   vars_files:
     - ./vars/vars.yaml

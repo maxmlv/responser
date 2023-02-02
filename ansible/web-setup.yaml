@@ -1,6 +1,6 @@
 ---
 - name: Install and configure packages
-  hosts: '{{ deploy_on }}'
+  hosts: "{{ lookup('env', 'DEPLOY_ON') }}"
   become: yes
   vars:
   tasks:

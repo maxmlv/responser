@@ -74,7 +74,7 @@ pipeline {
             steps {
                 sh '''
                 cd ansible
-                ansible-playbook efs-mount.yaml -i hosts.ini --extra-vars "deploy_on=$DEPLOY_ON"
+                ansible-playbook efs-mount.yaml -i hosts.ini
                 '''
             }
         }
@@ -83,7 +83,7 @@ pipeline {
             steps {
                 sh '''
                 cd ansible
-                ansible-playbook web-setup.yaml -i hosts.ini --extra-vars "deploy_on=$DEPLOY_ON"
+                ansible-playbook web-setup.yaml -i hosts.ini
                 '''
             }
         }
@@ -92,7 +92,7 @@ pipeline {
             steps {
                 sh '''
                 cd ansible
-                ansible-playbook deployment.yaml -i hosts.ini --extra-vars "deploy_on=$DEPLOY_ON"
+                ansible-playbook deployment.yaml -i hosts.ini
                 '''
             }
         }
