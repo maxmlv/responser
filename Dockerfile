@@ -14,4 +14,6 @@ RUN apk add terraform --repository=https://dl-cdn.alpinelinux.org/alpine/edge/co
 # install aws cli
 RUN apk add --no-cache aws-cli
 
+RUN apk add jq
+
 USER jenkins
