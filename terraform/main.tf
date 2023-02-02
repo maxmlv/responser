@@ -50,11 +50,3 @@ resource "local_file" "hosts_cfg" {
 
   depends_on = [module.blue]
 }
-
-module "dns" {
-  source        = "./dns"
-  zone_name     = var.zone_name
-  deployment = var.deployment
-  blue_public_ip = module.blue.public_ip
-  green_public_ip = module.green.public_ip
-}

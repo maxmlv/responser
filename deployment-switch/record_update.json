@@ -1,0 +1,18 @@
+{
+  "Comment": "Update responser.space record to new version of application",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "responser.space",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [
+          {
+            "Value": "???"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -27,3 +27,11 @@ output "rds_db" {
 output "s3_bucket" {
   value = module.s3.bucket_name
 }
+
+output "blue" {
+  value = module.blue.public_ip
+}
+
+output "green" {
+  value = module.green.public_ip
+}
