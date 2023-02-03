@@ -53,7 +53,8 @@ public class PostApiController {
                          @RequestParam("redirect") String redirect) throws IOException {
         Post post = postService.findPostById(post_id);
 
-        awsS3Service.deleteObject(post.getMediaFile().getName());
+        if (post.getMediaFile().getName() != null)
+            awsS3Service.deleteObject(post.getMediaFile().getName());
         mediaFileService.deleteByPost(post);
         replyService.deleteAllRepliesByPost(post);
         commentService.deleteAllCommentsByPost(post);
