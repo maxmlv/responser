@@ -1,6 +1,6 @@
 # EPAM [OnlineUA] Cloud&DevOps Fundamentals Autumn 2022 | Final Project
 
-### [responser.space](http://responser.space)
+### <a href="https://responser.space/" target="_blank">responser.space</a>
 
 ## Overview
 
