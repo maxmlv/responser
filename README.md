@@ -1,10 +1,8 @@
 # EPAM [OnlineUA] Cloud&DevOps Fundamentals Autumn 2022 | Final Project
 
-### <a href="https://responser.space/" target="_blank" rel="noopener"><span>responser.space</span></a>
+### [responser.space](http://responser.space)
 
 ## Overview
-
----
 
 Responser is a prototype of popular social network written on __Java__ with basic pull
 of functionalities. (registration, login, post, comments, etc.)
@@ -47,8 +45,6 @@ process.
   - Docker
 
 ## Infrastructure
-
----
 
 ![Infra Diagram](screenshots/infra_diagram.png)
 
@@ -103,8 +99,6 @@ resource "local_file" "hosts_cfg" {
 
 ## Docker inside Jenkins EC2 instance
 
----
-
 Jenkins runs from Docker image with pre-installed Docker in it
 to run Jenkins Agents nodes from DockerHub image. ([Dockerfile](Dockerfile) of the latest version of Jenkins node Docker image)
 
@@ -122,8 +116,6 @@ agent {
 
 
 ## CI/CD
-
----
 
 ![CI/CD diagram](screenshots/cicd_diagram.png)
 
