@@ -48,5 +48,5 @@ resource "local_file" "hosts_cfg" {
   )
   filename = "../ansible/hosts.ini"
 
-  depends_on = [module.blue]
+  depends_on = [module.blue, module.green]
 }
