@@ -29,6 +29,10 @@ pipeline {
         }
 
         stage('Terraform apply') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 cd terraform
@@ -48,6 +52,10 @@ pipeline {
         }
 
         stage('Ansible PK and Vars retrieval') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 [ ! -d ~/.ssh ] && mkdir ~/.ssh
@@ -67,7 +75,24 @@ pipeline {
             }
         }
 
+        stage('Ansible Syntax Check') {
+            steps {
+                sh '''
+                cd deployment-switch
+                . export_state.sh deploy_state
+                cd ../ansible
+                ansible-playbook efs-mount.yaml -i hosts.ini
+                ansible-playbook web-setup.yaml -i hosts.ini
+                ansible-playbook deployment.yaml -i hosts.ini
+                '''
+            }
+        }
+
         stage('Ansible EFS Mount') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 cd deployment-switch
@@ -79,6 +104,10 @@ pipeline {
         }
 
         stage('Ansible Web') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 cd deployment-switch
@@ -90,6 +119,10 @@ pipeline {
         }
 
         stage('Ansible Deployment') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 cd deployment-switch
@@ -101,6 +134,10 @@ pipeline {
         }
 
         stage('Post-Deployment Traffic Switch') {
+            when {
+                branch 'main'
+            }
+
             steps {
                 sh '''
                 cd deployment-switch

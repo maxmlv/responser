@@ -1,0 +1,16 @@
+[Unit]
+Description=Responser Java Application
+After=syslog.target network.target
+
+[Service]
+SuccessExitStatus=143
+
+Type=simple
+
+EnvironmentFile=/etc/environment
+WorkingDirectory=/var/www/responser.space
+ExecStart=java -jar responser-${RESPONSER_VERSION}.jar
+ExecStop=/bin/kill -15 $MAINPID
+
+[Install]
+WantedBy=multi-user.target

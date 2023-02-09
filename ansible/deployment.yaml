@@ -14,13 +14,17 @@
         value: '{{ rds_username }}'
       - key: SPRING_DATASOURCE_PASSWORD
         value: '{{ rds_password }}'
+      - key: RESPONSER_VERSION
+        value: '{{ app_version }}'
   tasks:
-    - name: Ensure old application stopped
-      command: pgrep -f java
+    - name: Ensure application service is stopped
+      service:
+        name: responser
+        state: stopped
       ignore_errors: true
-      register: pid
-    - command: kill {{ pid.stdout }}
-      when: pid.stdout != ""
+
+    - name: Clean working directory from old .jar files
+      command: rm /var/www/{{ domain }}/*.jar
 
     - name: customize /etc/environment
       ansible.builtin.lineinfile:
@@ -38,5 +42,18 @@
         group: "{{ ansible_ssh_user }}"
         mode: 0644
 
-    - name: Run java application
-      shell: nohup java -jar /var/www/{{ domain }}/responser-{{ app_version }}.jar > /var/log/{{ domain }}/responser.log 2>&1 &
+    - name: Copy systemd service file
+      template:
+        src: responser.service
+        dest: /etc/systemd/system
+        owner: '{{ ansible_ssh_user }}'
+        group: '{{ ansible_ssh_user }}'
+
+    - name: Reread configs
+      systemd:
+        daemon_reload: yes
+
+    - name: Run responser.service
+      service:
+        name: responser
+        state: started
