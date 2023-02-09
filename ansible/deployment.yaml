@@ -25,6 +25,7 @@
 
     - name: Clean working directory from old .jar files
       command: rm /var/www/{{ domain }}/*.jar
+      ignore_errors: yes
 
     - name: customize /etc/environment
       ansible.builtin.lineinfile:
