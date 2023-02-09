@@ -81,9 +81,9 @@ pipeline {
                 cd deployment-switch
                 . export_state.sh deploy_state
                 cd ../ansible
-                ansible-playbook efs-mount.yaml -i hosts.ini
-                ansible-playbook web-setup.yaml -i hosts.ini
-                ansible-playbook deployment.yaml -i hosts.ini
+                ansible-playbook efs-mount.yaml -i hosts.ini --syntax-check
+                ansible-playbook web-setup.yaml -i hosts.ini --syntax-check
+                ansible-playbook deployment.yaml -i hosts.ini --syntax-check
                 '''
             }
         }
