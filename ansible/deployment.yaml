@@ -58,3 +58,4 @@
       service:
         name: responser
         state: started
+        enabled: yes
