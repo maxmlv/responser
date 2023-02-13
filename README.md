@@ -113,51 +113,76 @@ agent {
 
 ## CI/CD
 
-![CI/CD diagram](screenshots/cicd_diagram.png)
+![CI/CD diagram](screenshots/pipeline.png)
 
-### Maven
+### GitHub Webhook
+
+Webhook triggers pipeline on: 
+- Merge changes into __main__ branch
+- Creating Pull requests
+- New commits
+
+### Pipeline
+
+#### Maven
 
 Maven is responsible for Build and Test stages. 
 After build is performed, the application is tested using unit and integration tests.
 
-### Terraform
+#### Terraform
 
 __Terraform__ is running __init__ and __plan__ stage first to 
 make sure code is ready for the __apply__ stage and build
 infrastructure.
 
-### Deployment Strategy State
+#### Deployment Strategy State
 
 This stage is set of bash scripts to pull current state of 
 __responser.space__ A record on __Route53__ Hosted Zone.
 (It can be weather "blue" or "green")
 
-deploy_state.sh pulls information from AWS using aws cli. 
+__deploy_state.sh__ pulls information from AWS using __aws cli__. 
 Then the fetched values are written into a file which represents current state of the application. 
 This file will be used in the next stages.
 
-### Ansible PK and Vars retrieval
+#### Ansible PK and Vars retrieval
 
 This build step consists of two stages: 
 
-1. Retrieval of private key from AWS Secrets Manager
-2. Terraform output variables are written into vars.yaml, so they can be used consistently during Ansible steps.
+1. Retrieval of private key from __AWS Secrets Manager__
+2. Terraform output variables are written into __vars.yaml__, so they can be used consistently during __Ansible__ steps.
 
-### Ansible EFS Mount
+#### Ansible Syntax Check
 
-This stage runs an ansible playbook, which mounts EFS volume containing SSL certificate to Blue and Green EC2s.
+This stage runs __Ansible__ playbooks in dry-run mode to 
+find all possible syntax vulnerabilities.
 
-### Ansible Web
+#### Ansible EFS Mount
 
-The following stage sets up NGINX reverse proxy which also enforces HTTPS, 
-ensures Java installation and create necessary directories for the application.
+This stage runs an __Ansible__ playbook, which mounts __EFS__ volume containing __SSL certificate__ to Blue and Green EC2s.
 
-### Ansible Deployment
+#### Ansible Web
+
+The following stage sets up __NGINX__ reverse proxy which also enforces HTTPS, 
+ensures __Java__ installation and create necessary directories for the application.
+
+#### Ansible Deployment
 
 This stages ensurers that all environment variables are in place, 
 uploads recently built jar file and starts the responser.
 
-### Post-Deployment Traffic Switch
+#### Post-Deployment Traffic Switch
 
 After all stages ran successfully, user traffic can be switched. 
 This is done by tag update to indicate current state and update in A record with the new IP.
+
+## Next Steps
+
+- Implement __IaC__ for VPC, Route53 and EFS for storing SSL certificates
+- Implement __IaC__ for Jenkins and acme-dns servers as well as
+initial configuration automation
+- Make infrastructure more scalable
+  - Auto Scaling Group for both Blue and Green environments
+  - Elastic Load Balancer
+- Containerize application
+- Ability to create environments for departments (dev, test, prod)
