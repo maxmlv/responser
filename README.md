@@ -178,10 +178,11 @@ This is done by tag update to indicate current state and update in A record with
 
 ## Next Steps
 
-- Implement __IaC__ for VPC
+- Implement __IaC__ for VPC, Route53 and EFS for storing SSL certificates
 - Implement __IaC__ for Jenkins and acme-dns servers as well as
 initial configuration automation
 - Make infrastructure more scalable
   - Auto Scaling Group for both Blue and Green environments
   - Elastic Load Balancer
 - Containerize application
+- Ability to create environments for departments (dev, test, prod)
