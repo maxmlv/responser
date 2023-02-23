@@ -22,8 +22,8 @@ pipeline {
             steps {
                 sh '''
                 cd terraform
-                terraform init
-                terraform plan -var-file="inputs.tfvars"
+                terraform init -no-color
+                terraform plan -var-file="inputs.tfvars" -no-color
                 '''
             }
         }
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 sh '''
                 cd terraform
-                terraform apply -var-file="inputs.tfvars" -auto-approve
+                terraform apply -var-file="inputs.tfvars" -auto-approve -no-color
                 '''
             }
         }
@@ -143,7 +143,7 @@ pipeline {
                 cd deployment-switch
                 . export_state.sh deploy_state
                 cd ../terraform
-                export DEPLOY_IP_ADDRESS=$(terraform output -raw $DEPLOY_ON)
+                export DEPLOY_IP_ADDRESS=$(terraform output -raw $DEPLOY_ON -no-color)
                 cd ../deployment-switch
                 ./deploy_switch.sh record_update.json $DEPLOY_IP_ADDRESS
                 '''
