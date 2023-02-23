@@ -168,7 +168,7 @@ ensures __Java__ installation and create necessary directories for the applicati
 
 #### Ansible Deployment
 
-This stages ensurers that all environment variables are in place, 
+This stages ensures that all environment variables are in place, 
 uploads recently built jar file and starts the responser.
 
 #### Post-Deployment Traffic Switch
